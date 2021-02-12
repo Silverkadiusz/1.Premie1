@@ -22,10 +22,14 @@ public class BonusCalculator {
     public List<EmployeeWithBonus> calculateBonusForEmployees(List<Employee> employees) {
         return employees
                 .stream()
-                .map(e -> new EmployeeWithBonus(e, calculateBonusForEmployee(e)))
+                .map(this::createEmployeeWithBonus)
                 .collect(Collectors.toList());
     }
 
+    private EmployeeWithBonus createEmployeeWithBonus(Employee e) {
+        BigDecimal bonus = calculateBonusForEmployee(e);
+        return new EmployeeWithBonus(e, bonus, e.getBaseSalary().add(bonus));
+    }
 
     private BigDecimal calculateBonusForEmployee(Employee employee) {
         YearMonth currentMonth = YearMonth.now();
@@ -36,8 +40,8 @@ public class BonusCalculator {
                 .mapToInt(WorkDone::getTimeInMinutes)
                 .sum();
 
-        int extraPayment = extraWorkInMinutes / 60 * 30;
-        extraPayment = Math.max(extraPayment, 500);
+        int extraPayment = (int) (extraWorkInMinutes / 60.0 * 30);
+        extraPayment = Math.min(extraPayment, 500);
         return BigDecimal.valueOf(extraPayment);
     }
 }

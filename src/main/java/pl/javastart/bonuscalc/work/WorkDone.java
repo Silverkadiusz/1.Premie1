@@ -1,5 +1,6 @@
 package pl.javastart.bonuscalc.work;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.javastart.bonuscalc.employee.Employee;
 
 import javax.persistence.*;
@@ -15,7 +16,18 @@ public class WorkDone {
     @ManyToOne
     private Employee employee;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
+    public WorkDone() {
+    }
+
+    public WorkDone(Employee employee, LocalDate date, int timeInMinutes, boolean additional) {
+        this.employee = employee;
+        this.date = date;
+        this.timeInMinutes = timeInMinutes;
+        this.additional = additional;
+    }
 
     private int timeInMinutes;
 
